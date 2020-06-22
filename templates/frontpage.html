@@ -12,7 +12,19 @@
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <script async src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>-->
+    
+    <style>
+      p.content {
+  white-space: nowrap;
+  word-break:break-all; 
+  word-wrap:break-word;
+}  
+    </style>
   </head>
+
+
+
+
 
   <body class="container">
 <!--  title -->
@@ -28,12 +40,14 @@
     </div>
   </div>
 
+  <p class="content">
   <div class="form-group row">
-    <label for="Content" class="col-sm-2 col-form-label">内容</label>
+     <label for="Content" class="col-sm-2 col-form-label">内容</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="content" name="content">
+      <textarea type="text" class="form-control" id="content" name="content" white-space="pre-wrap" rows="8" style="min-width: 90%"> </textarea>
     </div>
-  </div>
+   </div>
+  </p>
  
   <div class="form-group row">
     <div class="col-sm-10">
@@ -49,10 +63,10 @@
 
   <thead class="thead-dark">
     <tr>
+    <th scope="col">时间</th>
       <th scope="col">名称</th>
       <th scope="col">内容</th>
       <th scope="col">ip</th>
-      <th scope="col">时间</th>
     </tr>
   </thead>
 
@@ -61,9 +75,9 @@
   {{range $line := $lines}}
   <tr>  
     {{range  $i,$v := $line }}   
-          <td class="bg-info">
-                {{ $v }}  
-          </td>
+          <!-- <td class="bg-info"> -->
+          <td> {{ $v }} </a> </td>
+          <!-- </td> -->
     {{end}} 
   </tr>
   {{end}}

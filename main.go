@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	// "github.com/gin-contrib/sessions"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -25,7 +23,7 @@ type Line struct {
 
 func init() {
 	var err error
-	DB, err = gorm.Open("sqlite3", "./gorm.db")
+	DB, err = gorm.Open("sqlite3", "./mtimeline.db")
 	if err != nil {
 		fmt.Printf("------- sqlite3 connect error %v", err)
 	}
@@ -39,39 +37,27 @@ func init() {
 // DB GET
 func (This *Line) GetAllHosts() [][]string {
 	var line []Line
-	DB.Find(&line)
+	DB.Order("create_at desc").Find(&line)
 	var lines [][]string
 	for _, l := range line {
-
 		var oneLine []string
-		oneLine = append(oneLine, l.Name, l.Content, l.Ip, l.CreateAt.Format("2006-01-02 15:04:05"))
+		oneLine = append(oneLine, l.CreateAt.Format("2006-01-02 15:04:05"), l.Name, l.Content, l.Ip)
 		lines = append(lines, oneLine)
-
-		// fmt.Println("l", l)
-		// append(lines, l)
 	}
-	// fmt.Println(lines)
 	return lines
 }
 
 // 新增页
 func LinePost(c *gin.Context) {
-
+	fmt.Println(c.ClientIP())
 	var line Line
 
 	line.Name = c.PostFormArray("name")[0]
 	line.Content = c.PostFormArray("content")[0]
-	line.Ip = "127.0.0.1"
+	line.Ip = c.ClientIP()
 	line.CreateAt = time.Now()
 	DB.Create(&line)
-	c.HTML(
-		http.StatusOK,
-		"frontpage.html",
-		gin.H{
-			"title": "sss",
-		},
-	)
-
+	c.Redirect(http.StatusMovedPermanently, "/")
 }
 
 // 展示页
@@ -98,7 +84,6 @@ func main() {
 	router := gin.Default()                                                        // Logger & Recovery
 	router.LoadHTMLGlob("templates/*")                                             // html模板
 	router.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string { // 日志格式化
-		// 自定义格式
 		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
 			param.ClientIP,
 			param.TimeStamp.Format(time.RFC1123),
@@ -111,11 +96,8 @@ func main() {
 			param.ErrorMessage,
 		)
 	}))
-	// router.Use(Middlewares.Cors())
-	// router.Use(sessions.Sessions("xyzsssssssssssssssss", Sessions.Store))
 	router.GET("/", FrontPage)
 	router.POST("/line", LinePost)
-	// end of disk
 
 	router.Run(":6969")
 }

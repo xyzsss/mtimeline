@@ -1,0 +1,10 @@
+
+
+#tmp
+tmp/*
+
+# mac
+.DS_Store
+
+# db file
+mtimeline.db
